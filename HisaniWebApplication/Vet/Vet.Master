@@ -1,0 +1,44 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Vet.master.cs" Inherits="HisaniWebApplication.Vet.VetMaster" %>
+
+<!DOCTYPE html>
+
+<html>
+<head runat="server">
+    <title>Hisani</title>
+    <link href="../Content/styles.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="../Images/hisani-favicon.png" />
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+
+<body>
+    <form id="form1" runat="server">
+        <!-- Navbar -->
+        <div class="navbar">
+            <!-- Logo placeholder -->
+            <div class="logo">
+                <a href="VetDashboard.aspx">
+                    <img src="../Images/Hisani - White Text Black Background.png" alt="Hisani Logo"/>
+                </a>
+            </div>
+            <!-- Navigation Links -->
+            <ul class="nav-links">
+                <li><a href="VetDashboard.aspx">Dashboard</a></li>
+                <li><a href="Vet-HorseList.aspx">Horses</a></li>
+                <li><a href="Vet-RecordDisplay.aspx">Records</a></li>
+                <li>
+                    <asp:LinkButton ID="btnLogout" runat="server" OnClick="Logout_Click" CssClass="logout-link">
+                        <em>Logout</em>
+                    </asp:LinkButton>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content Placeholder -->
+        <div class="content">
+            <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+            </asp:ContentPlaceHolder>
+        </div>
+    </form>
+</body>
+</html>
