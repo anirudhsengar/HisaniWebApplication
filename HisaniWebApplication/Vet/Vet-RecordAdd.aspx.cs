@@ -34,8 +34,8 @@ namespace HisaniWebApplication.Vet
             string vetEmail = Session["vetEmail"] as string; // Replace with actual session-based retrieval
             if (string.IsNullOrEmpty(vetEmail))
             {
-                Response.Write("Error: Trainer email not found in session.");
-                return;
+                Response.Redirect("~/Authentication/Login.aspx", false);
+                Context.ApplicationInstance.CompleteRequest();
             }
 
             // Fetch StableID associated with the trainer

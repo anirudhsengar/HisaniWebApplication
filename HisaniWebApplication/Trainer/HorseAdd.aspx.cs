@@ -28,9 +28,8 @@ namespace HisaniWebApplication.Trainer
             string trainerEmail = Session["TrainerEmail"] as string; // TrainerEmail should be in session
             if (string.IsNullOrEmpty(trainerEmail))
             {
-                // Handle the case where the TrainerEmail is not found in session
-                Response.Redirect("~/Login.aspx");
-                return;
+                Response.Redirect("~/Authentication/Login.aspx", false);
+                Context.ApplicationInstance.CompleteRequest();
             }
 
             try

@@ -28,12 +28,17 @@ namespace HisaniWebApplication.Trainer
                 string location = Location.Text.Trim();
                 int capacity = Math.Max(0, int.Parse(Capacity.Text.Trim())); // Ensure capacity is 0 or higher
                 string trainerEmail = Session["TrainerEmail"] as string; // You can replace this with the actual trainer's email from session or another source
+                if (string.IsNullOrEmpty(trainerEmail))
+                {
+                    Response.Redirect("~/Authentication/Login.aspx", false);
+                    Context.ApplicationInstance.CompleteRequest();
+                }
 
                 string query = "INSERT INTO Stable (StableName, Location, Capacity, TrainerEmail) " +
                                "VALUES (@StableName, @Location, @Capacity, @TrainerEmail)";
 
                 // Create and open the connection
-                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["HISANI"].ConnectionString))
+                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["HisaniDB"].ConnectionString))
                 {
                     using (SqlCommand cmd = new SqlCommand(query, con))
                     {

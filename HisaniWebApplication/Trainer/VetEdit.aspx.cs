@@ -28,8 +28,8 @@ namespace HisaniWebApplication.Trainer
 
                     if (string.IsNullOrEmpty(trainerEmail))
                     {
-                        Response.Write("Error: Trainer not found.");
-                        return;
+                        Response.Redirect("~/Authentication/Login.aspx", false);
+                        Context.ApplicationInstance.CompleteRequest();
                     }
 
                     // Step 2: Query the database to find the stable where this trainer is assigned
@@ -59,14 +59,14 @@ namespace HisaniWebApplication.Trainer
                     {
                         // Step 4: Display vet data in the form
                         VetName.Text = vetTable.Rows[0]["VetName"].ToString();
-                        VetSpecialty.Text = vetTable.Rows[0]["Specialty"].ToString();
+                        VetSpeciality.Text = vetTable.Rows[0]["Speciality"].ToString();
                         VetContact.Text = vetTable.Rows[0]["Contact"].ToString();
                     }
                     else
                     {
                         // If no vet is found for this stable
                         VetName.Text = "No vet assigned.";
-                        VetSpecialty.Text = "N/A";
+                        VetSpeciality.Text = "N/A";
                         VetContact.Text = "N/A";
                     }
                 }
@@ -85,7 +85,8 @@ namespace HisaniWebApplication.Trainer
                 string trainerEmail = Session["TrainerEmail"] as string; // Replace with session value for actual use
                 if (string.IsNullOrEmpty(trainerEmail))
                 {
-                    Response.Write("Error: Trainer email not found.");
+                    Response.Redirect("~/Authentication/Login.aspx", false);
+                    Context.ApplicationInstance.CompleteRequest();
                     return;
                 }
 
@@ -106,22 +107,22 @@ namespace HisaniWebApplication.Trainer
 
                 // Step 3: Retrieve form values from the controls on the page
                 string vetName = VetName.Text.Trim();
-                string vetSpecialty = VetSpecialty.Text.Trim();
+                string vetSpeciality = VetSpeciality.Text.Trim();
                 string vetContact = VetContact.Text.Trim();
 
-                if (string.IsNullOrEmpty(vetName) || string.IsNullOrEmpty(vetSpecialty) || string.IsNullOrEmpty(vetContact))
+                if (string.IsNullOrEmpty(vetName) || string.IsNullOrEmpty(vetSpeciality) || string.IsNullOrEmpty(vetContact))
                 {
                     Response.Write("Error: Please fill all the fields.");
                     return;
                 }
 
                 // Step 4: Update the vet record in the database using the StableID
-                string updateQuery = "UPDATE Vet SET VetName = @VetName, Specialty = @Specialty, Contact = @Contact WHERE StableID = @StableID";
+                string updateQuery = "UPDATE Vet SET VetName = @VetName, Speciality = @Speciality, Contact = @Contact WHERE StableID = @StableID";
                 SqlCommand updateCommand = new SqlCommand(updateQuery);
 
                 // Add parameters to the command
                 updateCommand.Parameters.AddWithValue("@VetName", vetName);
-                updateCommand.Parameters.AddWithValue("@Specialty", vetSpecialty);
+                updateCommand.Parameters.AddWithValue("@Speciality", vetSpeciality);
                 updateCommand.Parameters.AddWithValue("@Contact", vetContact);
                 updateCommand.Parameters.AddWithValue("@StableID", stableID); // Add StableID to the query
 

@@ -34,6 +34,11 @@ namespace HisaniWebApplication.Trainer
             {
                 // Assuming trainer's email is stored in session and retrieving StableID based on TrainerEmail
                 string trainerEmail = Session["TrainerEmail"] as string; // Replace with Session["TrainerEmail"] for dynamic access
+                if (string.IsNullOrEmpty(trainerEmail))
+                {
+                    Response.Redirect("~/Authentication/Login.aspx", false);
+                    Context.ApplicationInstance.CompleteRequest();
+                }
 
                 // Fetch stable details for the trainer
                 string query = "SELECT StableName, Location, Capacity FROM Stable WHERE TrainerEmail = @TrainerEmail";

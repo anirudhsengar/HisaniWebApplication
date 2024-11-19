@@ -19,6 +19,11 @@ namespace HisaniWebApplication.Vet
             if (!IsPostBack)
             {
                 string vetEmail = Session["VetEmail"].ToString();
+                if (string.IsNullOrEmpty(vetEmail))
+                {
+                    Response.Redirect("~/Authentication/Login.aspx", false);
+                    Context.ApplicationInstance.CompleteRequest();
+                }
                 LoadDashboardData(vetEmail);
             }
         }

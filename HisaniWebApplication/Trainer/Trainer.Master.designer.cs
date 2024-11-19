@@ -42,6 +42,15 @@ namespace HisaniWebApplication.Trainer
         protected global::System.Web.UI.HtmlControls.HtmlAnchor stableLink;
 
         /// <summary>
+        /// horseLink control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor horseLink;
+
+        /// <summary>
         /// vetLink control.
         /// </summary>
         /// <remarks>
@@ -49,6 +58,15 @@ namespace HisaniWebApplication.Trainer
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlAnchor vetLink;
+
+        /// <summary>
+        /// recordsLink control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor recordsLink;
 
         /// <summary>
         /// btnLogout control.

@@ -30,11 +30,12 @@ namespace HisaniWebApplication.Trainer
                 string trainerEmail = Session["TrainerEmail"] as string; // Assuming this is set
                 if (string.IsNullOrEmpty(trainerEmail))
                 {
-                    return;
+                    Response.Redirect("~/Authentication/Login.aspx", false);
+                    Context.ApplicationInstance.CompleteRequest();
                 }
 
                 // Query to fetch stable details by TrainerEmail
-                string query = "SELECT StableName, Location, Capacity, VetEmail FROM Stable WHERE TrainerEmail = @TrainerEmail";
+                string query = "SELECT StableName, Location, Capacity FROM Stable WHERE TrainerEmail = @TrainerEmail";
                 SqlCommand cmd = new SqlCommand(query);
                 cmd.Parameters.AddWithValue("@TrainerEmail", trainerEmail);
 
@@ -46,9 +47,9 @@ namespace HisaniWebApplication.Trainer
                     DataRow row = dt.Rows[0];
 
                     // Setting placeholders using Attributes collection
-                    StableName.Attributes["placeholder"] = row["StableName"].ToString();
-                    Location.Attributes["placeholder"] = row["Location"].ToString();
-                    Capacity.Attributes["placeholder"] = row["Capacity"].ToString();
+                    StableName.Text = row["StableName"].ToString();
+                    Location.Text = row["Location"].ToString();
+                    Capacity.Text = row["Capacity"].ToString();
                 }
             }
             catch (Exception ex)
@@ -72,7 +73,7 @@ namespace HisaniWebApplication.Trainer
                 }
 
                 // Proceed with update if VetEmail exists
-                string updateQuery = "UPDATE Stable SET StableName = @StableName, Location = @Location, Capacity = @Capacity, VetEmail = @VetEmail WHERE TrainerEmail = @TrainerEmail";
+                string updateQuery = "UPDATE Stable SET StableName = @StableName, Location = @Location, Capacity = @Capacity WHERE TrainerEmail = @TrainerEmail";
                 SqlCommand cmd = new SqlCommand(updateQuery);
                 cmd.Parameters.AddWithValue("@StableName", StableName.Text);
                 cmd.Parameters.AddWithValue("@Location", Location.Text);

@@ -64,7 +64,7 @@
             </div>
             <div class="form-group">
                 <label for="vetSpecialty">Specialty</label>
-                <asp:TextBox ID="VetSpecialty" runat="server" Text="<%= VetSpecialty %>" required />
+                <asp:TextBox ID="VetSpeciality" runat="server" Text="<%= VetSpecialty %>" required />
             </div>
             <div class="form-group">
                 <label for="vetContact">Contact</label>

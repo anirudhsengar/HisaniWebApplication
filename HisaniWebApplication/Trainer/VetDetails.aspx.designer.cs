@@ -24,13 +24,13 @@ namespace HisaniWebApplication.Trainer
         protected global::System.Web.UI.WebControls.Label VetName;
 
         /// <summary>
-        /// VetSpecialty control.
+        /// VetSpeciality control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label VetSpecialty;
+        protected global::System.Web.UI.WebControls.Label VetSpeciality;
 
         /// <summary>
         /// VetContact control.

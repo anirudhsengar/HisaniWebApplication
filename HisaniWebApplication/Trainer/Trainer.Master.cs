@@ -15,10 +15,20 @@ namespace HisaniWebApplication.Trainer
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            string trainerEmail = Session["TrainerEmail"] as string;
+
+            if (string.IsNullOrEmpty(trainerEmail))
+            {
+                Response.Redirect("~/Authentication/Login.aspx", false);
+                Context.ApplicationInstance.CompleteRequest();
+            }
+
             if (!IsPostBack)
             {
                 SetStableLink();
                 SetVetLink();
+                SetHorseList();
+                SetRecordsList();
             }
         }
 
@@ -53,7 +63,7 @@ namespace HisaniWebApplication.Trainer
         {
             try
             {
-                string trainerEmail = "testtrainer@example.com"; // Replace with actual session value
+                string trainerEmail = Session["TrainerEmail"] as string;// Replace with actual session value
 
                 // Query to get the current stable ID for the trainer
                 string stableQuery = $"SELECT StableID FROM Stable WHERE TrainerEmail = '{trainerEmail}'";
@@ -61,7 +71,7 @@ namespace HisaniWebApplication.Trainer
 
                 if (dtStable.Rows.Count == 0)
                 {
-                    Response.Write("<script>alert('Error: No stable found for this trainer.');</script>");
+                    vetLink.HRef = "StableAdd.aspx";
                     return;
                 }
 
@@ -83,7 +93,43 @@ namespace HisaniWebApplication.Trainer
             }
             catch (Exception ex)
             {
-                Response.Write("<script>alert('Error: " + ex.Message + "');</script>");
+                
+            }
+        }
+
+        private void SetHorseList()
+        {
+            string trainerEmail = Session["TrainerEmail"] as string;// Replace with actual session value
+
+            // Query to get the current stable ID for the trainer
+            string stableQuery = $"SELECT StableID FROM Stable WHERE TrainerEmail = '{trainerEmail}'";
+            DataTable dtStable = fn.Fetch(stableQuery);
+
+            if (dtStable.Rows.Count == 0)
+            {
+                horseLink.HRef = "StableAdd.aspx";
+            }
+            else
+            {
+                horseLink.HRef = "HorseList.aspx";
+            }
+        }
+
+        private void SetRecordsList()
+        {
+            string trainerEmail = Session["TrainerEmail"] as string;// Replace with actual session value
+
+            // Query to get the current stable ID for the trainer
+            string stableQuery = $"SELECT StableID FROM Stable WHERE TrainerEmail = '{trainerEmail}'";
+            DataTable dtStable = fn.Fetch(stableQuery);
+
+            if (dtStable.Rows.Count == 0)
+            {
+                recordsLink.HRef = "StableAdd.aspx";
+            } 
+            else
+            {
+                recordsLink.HRef = "VetRecordDisplay.aspx";
             }
         }
         protected void Logout_Click(object sender, EventArgs e)

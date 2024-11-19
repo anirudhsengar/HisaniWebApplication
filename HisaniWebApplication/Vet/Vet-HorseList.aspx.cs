@@ -29,9 +29,10 @@ namespace HisaniWebApplication.Vet
                 string vetEmail = Session["vetEmail"] as string; // Ensure vetEmail is set in the session
                 if (string.IsNullOrEmpty(vetEmail))
                 {
-                    // Handle the case where trainer email is missing
-                    return;
+                    Response.Redirect("~/Authentication/Login.aspx", false);
+                    Context.ApplicationInstance.CompleteRequest();
                 }
+                
 
                 // Query to fetch horses associated with the trainer's stable
                 string query = "SELECT HorseID, HorseName FROM Horse WHERE StableID = (SELECT StableID FROM Stable WHERE vetEmail = @vetEmail)";

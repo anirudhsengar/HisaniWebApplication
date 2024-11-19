@@ -25,6 +25,12 @@ namespace HisaniWebApplication.Trainer
         {
             try
             {
+                string trainerEmail = Session["TrainerEmail"] as string;
+                if (string.IsNullOrEmpty(trainerEmail))
+                {
+                    Response.Redirect("~/Authentication/Login.aspx", false);
+                    Context.ApplicationInstance.CompleteRequest();
+                }
                 // Query for Total Horses
                 string horseCountQuery = "SELECT COUNT(*) FROM Horse";
                 DataTable dtHorseCount = fn.Fetch(horseCountQuery);

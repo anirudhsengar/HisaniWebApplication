@@ -53,7 +53,7 @@
             <strong>Vet Name:</strong> <asp:Label ID="VetName" runat="server" Text="N/A" />
         </div>
         <div class="vet-details">
-            <strong>Specialty:</strong> <asp:Label ID="VetSpecialty" runat="server" Text="N/A" />
+            <strong>Speciality:</strong> <asp:Label ID="VetSpeciality" runat="server" Text="N/A" />
         </div>
         <div class="vet-details">
             <strong>Contact:</strong> <asp:Label ID="VetContact" runat="server" Text="N/A" />

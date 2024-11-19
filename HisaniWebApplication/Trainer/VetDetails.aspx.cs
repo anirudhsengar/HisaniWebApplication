@@ -38,6 +38,11 @@ namespace HisaniWebApplication.Trainer
             {
                 // Get trainer's email and current stable ID (replace with session value)
                 string trainerEmail = Session["TrainerEmail"] as string; // Replace with actual session value
+                if (string.IsNullOrEmpty(trainerEmail))
+                {
+                    Response.Redirect("~/Authentication/Login.aspx", false);
+                    Context.ApplicationInstance.CompleteRequest();
+                }
                 string stableQuery = "SELECT StableID FROM Stable WHERE TrainerEmail = @TrainerEmail";
                 SqlCommand stableCommand = new SqlCommand(stableQuery);
                 stableCommand.Parameters.AddWithValue("@TrainerEmail", trainerEmail);
@@ -53,7 +58,7 @@ namespace HisaniWebApplication.Trainer
                 int stableID = Convert.ToInt32(stableTable.Rows[0]["StableID"]);
 
                 // Fetch vet details based on StableID (assuming only one vet per stable)
-                string vetQuery = "SELECT VetName, Specialty, Contact FROM Vet WHERE StableID = @StableID";
+                string vetQuery = "SELECT VetName, Speciality, Contact FROM Vet WHERE StableID = @StableID";
                 SqlCommand vetCommand = new SqlCommand(vetQuery);
                 vetCommand.Parameters.AddWithValue("@StableID", stableID);
 
@@ -63,14 +68,14 @@ namespace HisaniWebApplication.Trainer
                 {
                     // Display vet details
                     VetName.Text = vetTable.Rows[0]["VetName"].ToString();
-                    VetSpecialty.Text = vetTable.Rows[0]["Specialty"].ToString();
+                    VetSpeciality.Text = vetTable.Rows[0]["Speciality"].ToString();
                     VetContact.Text = vetTable.Rows[0]["Contact"].ToString();
                 }
                 else
                 {
                     // If no vet is found for this stable
                     VetName.Text = "No vet assigned.";
-                    VetSpecialty.Text = "N/A";
+                    VetSpeciality.Text = "N/A";
                     VetContact.Text = "N/A";
                 }
             }
@@ -111,7 +116,7 @@ namespace HisaniWebApplication.Trainer
                 SqlCommand updateStableCommand = new SqlCommand(updateStableQuery);
                 updateStableCommand.Parameters.AddWithValue("@StableID", stableID);
                 fn.ExecuteQuery(updateStableCommand);
-                Response.Redirect("VetDetails.aspx", false); // Redirect back after update
+                Response.Redirect("VetAdd.aspx", false); // Redirect back after update
                 Context.ApplicationInstance.CompleteRequest(); // Ensure redirection happens immediately
             }
             catch (Exception ex)

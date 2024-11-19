@@ -11,6 +11,12 @@ namespace HisaniWebApplication.Vet
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            string vetEmail = Session["VetEmail"] as string;
+            if (string.IsNullOrEmpty(vetEmail))
+            {
+                Response.Redirect("~/Authentication/Login.aspx", false);
+                Context.ApplicationInstance.CompleteRequest();
+            }
 
         }
 

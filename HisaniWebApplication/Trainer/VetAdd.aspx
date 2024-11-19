@@ -65,7 +65,7 @@
             </div>
             <div class="form-group">
                 <label for="vetSpecialty">Specialty</label>
-                <input type="text" id="vetSpecialty" name="vetSpecialty" required />
+                <input type="text" id="vetSpeciality" name="vetSpeciality" required />
             </div>
             <div class="form-group">
                 <label for="vetContact">Contact</label>

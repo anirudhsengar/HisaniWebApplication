@@ -23,9 +23,9 @@
             <ul class="nav-links">
                 <li><a href="TrainerHome.aspx">Dashboard</a></li>
                 <li><a id="stableLink" runat="server">Stable</a></li>
-                <li><a href="HorseList.aspx">Horse</a></li>
+                <li><a id="horseLink" runat="server">Horse</a></li>
                 <li><a id="vetLink" runat="server">Vet</a></li>
-                <li><a href="VetRecordDisplay.aspx">Records</a></li>
+                <li><a id="recordsLink" runat="server">Records</a></li>
                 <li>
                     <asp:LinkButton ID="btnLogout" runat="server" OnClick="Logout_Click" CssClass="logout-link">
                         <em>Logout</em>

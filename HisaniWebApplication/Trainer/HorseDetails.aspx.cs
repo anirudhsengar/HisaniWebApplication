@@ -85,8 +85,5 @@ namespace HisaniWebApplication.Trainer
             }
         }
 
-
-
-
     }
 }

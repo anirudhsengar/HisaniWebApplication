@@ -29,12 +29,12 @@ namespace HisaniWebApplication.Trainer
                 string trainerEmail = Session["TrainerEmail"] as string; // Ensure TrainerEmail is set in the session
                 if (string.IsNullOrEmpty(trainerEmail))
                 {
-                    // Handle the case where trainer email is missing
-                    return;
+                    Response.Redirect("~/Authentication/Login.aspx", false);
+                    Context.ApplicationInstance.CompleteRequest();
                 }
 
-                // Query to fetch horses associated with the trainer's stable
-                string query = "SELECT HorseID, HorseName FROM Horse WHERE StableID = (SELECT StableID FROM Stable WHERE TrainerEmail = @TrainerEmail)";
+                    // Query to fetch horses associated with the trainer's stable
+                    string query = "SELECT HorseID, HorseName FROM Horse WHERE StableID = (SELECT StableID FROM Stable WHERE TrainerEmail = @TrainerEmail)";
                 SqlCommand cmd = new SqlCommand(query);
                 cmd.Parameters.AddWithValue("@TrainerEmail", trainerEmail);
 

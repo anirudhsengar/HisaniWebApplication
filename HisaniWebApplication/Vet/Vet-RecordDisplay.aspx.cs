@@ -73,11 +73,15 @@ namespace HisaniWebApplication.Vet
             // Retrieve the trainer's email (can be obtained from session or any other method)
             string vetEmail = Session["vetEmail"] as string; // Replace with actual email from session
             string stableID = GetStableIDByvetEmail(vetEmail);
-
+            if (string.IsNullOrEmpty(vetEmail))
+            {
+                Response.Redirect("~/Authentication/Login.aspx", false);
+                Context.ApplicationInstance.CompleteRequest();
+            }
             if (string.IsNullOrEmpty(stableID))
             {
-
-                return;
+                Response.Redirect("VetDashboard.aspx", false);
+                Context.ApplicationInstance.CompleteRequest();
             }
 
             // Fetch records based on StableID

@@ -71,10 +71,10 @@ namespace HisaniWebApplication.Trainer
             string trainerEmail = Session["TrainerEmail"] as string; // Replace with actual email from session
             string stableID = GetStableIDByTrainerEmail(trainerEmail);
 
-            if (string.IsNullOrEmpty(stableID))
+            if (string.IsNullOrEmpty(trainerEmail))
             {
-
-                return;
+                Response.Redirect("~/Authentication/Login.aspx", false);
+                Context.ApplicationInstance.CompleteRequest();
             }
 
             // Fetch records based on StableID

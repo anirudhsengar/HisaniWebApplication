@@ -29,11 +29,16 @@ namespace HisaniWebApplication.Trainer
                 // Retrieve form values
                 string vetEmail = Request.Form["vetEmail"];
                 string vetName = Request.Form["vetName"];
-                string vetSpecialty = Request.Form["vetSpecialty"];
+                string vetSpeciality = Request.Form["vetSpeciality"];
                 string vetContact = Request.Form["vetContact"];
 
                 // Get trainer's email and current stable ID
                 string trainerEmail = Session["TrainerEmail"] as string; // Replace with actual session value
+                if (string.IsNullOrEmpty(trainerEmail))
+                {
+                    Response.Redirect("~/Authentication/Login.aspx", false);
+                    Context.ApplicationInstance.CompleteRequest();
+                }
                 string stableQuery = "SELECT StableID FROM Stable WHERE TrainerEmail = @TrainerEmail";
                 SqlCommand stableCommand = new SqlCommand(stableQuery);
                 stableCommand.Parameters.AddWithValue("@TrainerEmail", trainerEmail);
@@ -74,14 +79,14 @@ namespace HisaniWebApplication.Trainer
                 else
                 {
                     // Insert new vet if not exists
-                    string insertVetQuery = "INSERT INTO Vet (Email, VetName, Specialty, Contact, StableID) " +
-                                            "VALUES (@Email, @VetName, @Specialty, @Contact, @StableID)";
+                    string insertVetQuery = "INSERT INTO Vet (Email, VetName, Speciality, Contact, StableID) " +
+                                            "VALUES (@Email, @VetName, @Speciality, @Contact, @StableID)";
                     SqlCommand insertCommand = new SqlCommand(insertVetQuery);
 
                     // Add parameters to the insert command
                     insertCommand.Parameters.AddWithValue("@Email", vetEmail);
                     insertCommand.Parameters.AddWithValue("@VetName", vetName);  // Use VetName instead of Name
-                    insertCommand.Parameters.AddWithValue("@Specialty", vetSpecialty);
+                    insertCommand.Parameters.AddWithValue("@Speciality", vetSpeciality);
                     insertCommand.Parameters.AddWithValue("@Contact", vetContact);
                     insertCommand.Parameters.AddWithValue("@StableID", stableID);
 

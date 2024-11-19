@@ -31,8 +31,8 @@ namespace HisaniWebApplication.Trainer
             string trainerEmail = Session["TrainerEmail"] as string; // Replace with actual session-based retrieval
             if (string.IsNullOrEmpty(trainerEmail))
             {
-                Response.Write("Error: Trainer email not found in session.");
-                return;
+                Response.Redirect("~/Authentication/Login.aspx", false);
+                Context.ApplicationInstance.CompleteRequest();
             }
 
             // Fetch StableID associated with the trainer
