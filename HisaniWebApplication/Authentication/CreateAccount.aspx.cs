@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using System.Security.Cryptography;
+using System.Text;
 using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Data;
 using System.Data.SqlClient;
 using HisaniWebApplication.Models;
 
@@ -30,9 +28,29 @@ namespace HisaniWebApplication.Authentication
             string userType = ddlUserType.SelectedValue;
 
             // Input Validation
-            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(confirmPassword))
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(confirmPassword) || string.IsNullOrEmpty(userType))
             {
                 lblMessage.Text = "All fields are required.";
+                return;
+            }
+
+            // Email Format Validation
+            if (!System.Text.RegularExpressions.Regex.IsMatch(email, @"^[^\s@]+@[^\s@]+\.[^\s@]+$"))
+            {
+                lblMessage.Text = "Please enter a valid email address.";
+                return;
+            }
+
+            // Password Validation
+            if (password.Length < 8)
+            {
+                lblMessage.Text = "Password must be at least 8 characters long.";
+                return;
+            }
+
+            if (!password.Any(char.IsUpper) || !password.Any(char.IsLower) || !password.Any(char.IsDigit))
+            {
+                lblMessage.Text = "Password must contain at least one uppercase letter, one lowercase letter, and one number.";
                 return;
             }
 
@@ -55,10 +73,11 @@ namespace HisaniWebApplication.Authentication
                     return;
                 }
 
+
                 // Insert new user
                 SqlCommand insertCmd = new SqlCommand("INSERT INTO [Users] (Email, Password, TypeOfUser) VALUES (@Email, @Password, @TypeOfUser)");
                 insertCmd.Parameters.AddWithValue("@Email", email);
-                insertCmd.Parameters.AddWithValue("@Password", password); // Consider hashing passwords for security.
+                insertCmd.Parameters.AddWithValue("@Password", password); // Store hashed password
                 insertCmd.Parameters.AddWithValue("@TypeOfUser", userType);
 
                 commonfn.ExecuteQuery(insertCmd);
@@ -69,8 +88,31 @@ namespace HisaniWebApplication.Authentication
             }
             catch (Exception ex)
             {
-                lblMessage.Text = "An error occurred while creating the account. Please try again." + ex;
+                lblMessage.Text = "An error occurred while creating the account. Please try again.";
                 // Optionally log the exception for debugging purposes.
+                // Example: Logger.LogError(ex);
+            }
+        }
+
+        /// <summary>
+        /// Hashes the input password using SHA256.
+        /// </summary>
+        /// <param name="password">The plain text password.</param>
+        /// <returns>The hashed password as a hexadecimal string.</returns>
+        private string HashPassword(string password)
+        {
+            using (SHA256 sha256Hash = SHA256.Create())
+            {
+                // ComputeHash returns byte array
+                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(password));
+
+                // Convert byte array to a string
+                StringBuilder builder = new StringBuilder();
+                foreach (var b in bytes)
+                {
+                    builder.Append(b.ToString("x2"));
+                }
+                return builder.ToString();
             }
         }
     }

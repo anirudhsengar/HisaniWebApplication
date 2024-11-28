@@ -32,7 +32,7 @@ namespace HisaniWebApplication.Trainer
             {
                 string query = "SELECT HorseName, HorseBreed, Sex, DateOfBirth FROM Horse WHERE HorseID = @HorseID";
                 SqlCommand cmd = new SqlCommand(query);
-                cmd.Parameters.AddWithValue("@HorseID", "1");
+                cmd.Parameters.AddWithValue("@HorseID", horseID);  // Use the correct HorseID from the query string
 
                 DataTable dt = fn.Fetch(cmd);
                 if (dt.Rows.Count > 0)
@@ -70,7 +70,7 @@ namespace HisaniWebApplication.Trainer
                 cmd.Parameters.AddWithValue("@HorseID", horseID);
                 cmd.Parameters.AddWithValue("@HorseName", HorseName.Text.Trim());
                 cmd.Parameters.AddWithValue("@HorseBreed", HorseBreed.Text.Trim());
-                cmd.Parameters.AddWithValue("@Sex", HorseSex.SelectedValue);
+                cmd.Parameters.AddWithValue("@HorseSex", HorseSex.SelectedValue);
                 cmd.Parameters.AddWithValue("@DateOfBirth", DateOfBirth.Text);
 
                 fn.ExecuteQuery(cmd);
@@ -79,6 +79,19 @@ namespace HisaniWebApplication.Trainer
             catch (Exception ex)
             {
                 Response.Write($"<script>alert('Error: {ex.Message}');</script>");
+            }
+        }
+
+        protected void ValidateDateOfBirth(object source, ServerValidateEventArgs args)
+        {
+            DateTime dateOfBirth = DateTime.Parse(args.Value);
+            if (dateOfBirth > DateTime.Now)
+            {
+                args.IsValid = false;
+            }
+            else
+            {
+                args.IsValid = true;
             }
         }
     }

@@ -26,42 +26,60 @@ namespace HisaniWebApplication.Trainer
             {
                 string stableName = StableName.Text.Trim();
                 string location = Location.Text.Trim();
-                int capacity = Math.Max(0, int.Parse(Capacity.Text.Trim())); // Ensure capacity is 0 or higher
-                string trainerEmail = Session["TrainerEmail"] as string; // You can replace this with the actual trainer's email from session or another source
+                int capacity;
+
+                // Server-side validation
+                if (string.IsNullOrEmpty(stableName) || stableName.Length < 3)
+                {
+                    Response.Write("<script>alert('Stable name must be at least 3 characters long.');</script>");
+                    return;
+                }
+
+                if (string.IsNullOrEmpty(location))
+                {
+                    Response.Write("<script>alert('Location is required.');</script>");
+                    return;
+                }
+
+                if (!int.TryParse(Capacity.Text.Trim(), out capacity) || capacity <= 0)
+                {
+                    Response.Write("<script>alert('Capacity must be a positive number.');</script>");
+                    return;
+                }
+
+                string trainerEmail = Session["TrainerEmail"] as string;
                 if (string.IsNullOrEmpty(trainerEmail))
                 {
                     Response.Redirect("~/Authentication/Login.aspx", false);
                     Context.ApplicationInstance.CompleteRequest();
                 }
 
+                // Database insertion
                 string query = "INSERT INTO Stable (StableName, Location, Capacity, TrainerEmail) " +
                                "VALUES (@StableName, @Location, @Capacity, @TrainerEmail)";
 
-                // Create and open the connection
                 using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["HisaniDB"].ConnectionString))
                 {
                     using (SqlCommand cmd = new SqlCommand(query, con))
                     {
-                        // Add parameters
                         cmd.Parameters.AddWithValue("@StableName", stableName);
                         cmd.Parameters.AddWithValue("@Location", location);
                         cmd.Parameters.AddWithValue("@Capacity", capacity);
-                        cmd.Parameters.AddWithValue("@TrainerEmail", trainerEmail); // Ensure TrainerEmail is included
+                        cmd.Parameters.AddWithValue("@TrainerEmail", trainerEmail);
 
-                        // Open connection and execute the query
                         con.Open();
                         cmd.ExecuteNonQuery();
                     }
                 }
 
-                // Redirect or show a success message
-                Response.Redirect("StableDetails.aspx"); // Or another page you want to redirect to
+                // Success message and redirection
+                Response.Redirect("StableDetails.aspx");
             }
             catch (Exception ex)
             {
-                // Handle the error (log it or show a message)
-                Response.Write("Error adding stable: " + ex.Message);
+                // Log or display error
             }
         }
+
     }
 }

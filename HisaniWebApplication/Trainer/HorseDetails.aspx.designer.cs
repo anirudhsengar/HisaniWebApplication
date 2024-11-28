@@ -15,6 +15,24 @@ namespace HisaniWebApplication.Trainer
     {
 
         /// <summary>
+        /// btnEditHorse control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnEditHorse;
+
+        /// <summary>
+        /// btnDeleteHorse control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnDeleteHorse;
+
+        /// <summary>
         /// lblHorseName control.
         /// </summary>
         /// <remarks>
@@ -51,21 +69,12 @@ namespace HisaniWebApplication.Trainer
         protected global::System.Web.UI.WebControls.Label lblHorseDOB;
 
         /// <summary>
-        /// btnDeleteHorse control.
+        /// lblMessage control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnDeleteHorse;
-
-        /// <summary>
-        /// lblConfirmationMessage control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblConfirmationMessage;
+        protected global::System.Web.UI.WebControls.Label lblMessage;
     }
 }

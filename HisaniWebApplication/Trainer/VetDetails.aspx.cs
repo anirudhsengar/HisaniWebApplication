@@ -1,14 +1,10 @@
-﻿
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Data;
-using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data.SqlClient;
 using static HisaniWebApplication.Models.CommonFunctions;
-
 
 namespace HisaniWebApplication.Trainer
 {
@@ -20,15 +16,8 @@ namespace HisaniWebApplication.Trainer
         {
             if (!IsPostBack)
             {
-                // Check if the delete request is made
-                if (Request.QueryString["delete"] == "true")
-                {
-                    DeleteVet();
-                }
-                else
-                {
-                    LoadVetDetails();
-                }
+                // Load the vet details if it's not a postback
+                LoadVetDetails();
             }
         }
 
@@ -36,18 +25,21 @@ namespace HisaniWebApplication.Trainer
         {
             try
             {
-                // Get trainer's email and current stable ID (replace with session value)
-                string trainerEmail = Session["TrainerEmail"] as string; // Replace with actual session value
+                // Get trainer's email from session
+                string trainerEmail = Session["TrainerEmail"] as string;
                 if (string.IsNullOrEmpty(trainerEmail))
                 {
                     Response.Redirect("~/Authentication/Login.aspx", false);
                     Context.ApplicationInstance.CompleteRequest();
+                    return;
                 }
+
+                // Fetch StableID based on TrainerEmail
                 string stableQuery = "SELECT StableID FROM Stable WHERE TrainerEmail = @TrainerEmail";
                 SqlCommand stableCommand = new SqlCommand(stableQuery);
                 stableCommand.Parameters.AddWithValue("@TrainerEmail", trainerEmail);
 
-                DataTable stableTable = fn.Fetch(stableCommand); // Fetch stable data
+                DataTable stableTable = fn.Fetch(stableCommand);
 
                 if (stableTable.Rows.Count == 0)
                 {
@@ -57,45 +49,53 @@ namespace HisaniWebApplication.Trainer
 
                 int stableID = Convert.ToInt32(stableTable.Rows[0]["StableID"]);
 
-                // Fetch vet details based on StableID (assuming only one vet per stable)
+                // Fetch Vet details associated with the stable
                 string vetQuery = "SELECT VetName, Speciality, Contact FROM Vet WHERE StableID = @StableID";
                 SqlCommand vetCommand = new SqlCommand(vetQuery);
                 vetCommand.Parameters.AddWithValue("@StableID", stableID);
 
-                DataTable vetTable = fn.Fetch(vetCommand); // Fetch vet data
+                DataTable vetTable = fn.Fetch(vetCommand);
 
                 if (vetTable.Rows.Count > 0)
                 {
-                    // Display vet details
-                    VetName.Text = vetTable.Rows[0]["VetName"].ToString();
-                    VetSpeciality.Text = vetTable.Rows[0]["Speciality"].ToString();
-                    VetContact.Text = vetTable.Rows[0]["Contact"].ToString();
+                    // Display the vet details in the corresponding labels
+                    lblVetName.Text = vetTable.Rows[0]["VetName"].ToString();
+                    lblVetSpeciality.Text = vetTable.Rows[0]["Speciality"].ToString();
+                    lblVetContact.Text = vetTable.Rows[0]["Contact"].ToString();
                 }
                 else
                 {
-                    // If no vet is found for this stable
-                    VetName.Text = "No vet assigned.";
-                    VetSpeciality.Text = "N/A";
-                    VetContact.Text = "N/A";
+                    // Display placeholder text when no vet is assigned
+                    lblVetName.Text = "No vet assigned.";
+                    lblVetSpeciality.Text = "N/A";
+                    lblVetContact.Text = "N/A";
                 }
             }
             catch (Exception ex)
             {
-                Response.Write("Error loading vet details: " + ex.Message);
+                lblMessage.Text = "Error loading vet details: " + ex.Message;
             }
         }
 
-        private void DeleteVet()
+        protected void btnEditVet_Click(object sender, EventArgs e)
         {
             try
             {
-                // Get trainer's email and stable ID (replace with actual session value)
-                string trainerEmail = Session["TrainerEmail"] as string; // Replace with actual session value
+                // Get trainer's email from session
+                string trainerEmail = Session["TrainerEmail"] as string;
+                if (string.IsNullOrEmpty(trainerEmail))
+                {
+                    Response.Redirect("~/Authentication/Login.aspx", false);
+                    Context.ApplicationInstance.CompleteRequest();
+                    return;
+                }
+
+                // Fetch StableID based on TrainerEmail
                 string stableQuery = "SELECT StableID FROM Stable WHERE TrainerEmail = @TrainerEmail";
                 SqlCommand stableCommand = new SqlCommand(stableQuery);
                 stableCommand.Parameters.AddWithValue("@TrainerEmail", trainerEmail);
 
-                DataTable stableTable = fn.Fetch(stableCommand); // Fetch stable data
+                DataTable stableTable = fn.Fetch(stableCommand);
 
                 if (stableTable.Rows.Count == 0)
                 {
@@ -105,25 +105,80 @@ namespace HisaniWebApplication.Trainer
 
                 int stableID = Convert.ToInt32(stableTable.Rows[0]["StableID"]);
 
-                // Update vet to set StableID to NULL
-                string updateVetQuery = "UPDATE Vet SET StableID = NULL WHERE StableID = @StableID";
-                SqlCommand updateCommand = new SqlCommand(updateVetQuery);
-                updateCommand.Parameters.AddWithValue("@StableID", stableID);
+                // Fetch Vet details associated with the stable
+                string vetQuery = "SELECT Email FROM Vet WHERE StableID = @StableID";
+                SqlCommand vetCommand = new SqlCommand(vetQuery);
+                vetCommand.Parameters.AddWithValue("@StableID", stableID);
 
-                fn.ExecuteQuery(updateCommand); // Execute update query
+                DataTable vetTable = fn.Fetch(vetCommand);
 
-                string updateStableQuery = "UPDATE STABLE SET VetEmail = NULL WHERE StableID = @StableID";
-                SqlCommand updateStableCommand = new SqlCommand(updateStableQuery);
-                updateStableCommand.Parameters.AddWithValue("@StableID", stableID);
-                fn.ExecuteQuery(updateStableCommand);
-                Response.Redirect("VetAdd.aspx", false); // Redirect back after update
-                Context.ApplicationInstance.CompleteRequest(); // Ensure redirection happens immediately
+                if (vetTable.Rows.Count > 0)
+                {
+                    // Redirect to Edit Vet page with the VetID as a query string parameter
+                    string email = vetTable.Rows[0]["Email"].ToString();  // Ensure you're passing the email as a string
+                    Response.Redirect($"VetEdit.aspx?email={email}", false);  // Pass it as a string
+                    Context.ApplicationInstance.CompleteRequest();
+                }
+                else
+                {
+                    // Display message if no vet is found
+                    lblMessage.Text = "No vet assigned to this stable.";
+                }
             }
             catch (Exception ex)
             {
-                Response.Write("Error updating vet: " + ex.Message);
+                lblMessage.Text = "Error during edit: " + ex.Message;
             }
         }
 
+        protected void btnDeleteVet_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Get trainer's email from session
+                string trainerEmail = Session["TrainerEmail"] as string;
+                if (string.IsNullOrEmpty(trainerEmail))
+                {
+                    Response.Redirect("~/Authentication/Login.aspx", false);
+                    Context.ApplicationInstance.CompleteRequest();
+                    return;
+                }
+
+                // Fetch StableID based on TrainerEmail
+                string stableQuery = "SELECT StableID FROM Stable WHERE TrainerEmail = @TrainerEmail";
+                SqlCommand stableCommand = new SqlCommand(stableQuery);
+                stableCommand.Parameters.AddWithValue("@TrainerEmail", trainerEmail);
+
+                DataTable stableTable = fn.Fetch(stableCommand);
+
+                if (stableTable.Rows.Count == 0)
+                {
+                    Response.Write("Error: No stable found for this trainer.");
+                    return;
+                }
+
+                int stableID = Convert.ToInt32(stableTable.Rows[0]["StableID"]);
+
+                // Remove the association of the vet with the stable (set StableID to NULL in Vet table)
+                string updateVetQuery = "UPDATE Vet SET StableID = NULL WHERE StableID = @StableID";
+                SqlCommand updateVetCommand = new SqlCommand(updateVetQuery);
+                updateVetCommand.Parameters.AddWithValue("@StableID", stableID);
+                fn.ExecuteQuery(updateVetCommand);
+
+                // Also clear the VetEmail in the Stable table
+                string updateStableQuery = "UPDATE Stable SET VetEmail = NULL WHERE StableID = @StableID";
+                SqlCommand updateStableCommand = new SqlCommand(updateStableQuery);
+                updateStableCommand.Parameters.AddWithValue("@StableID", stableID);
+                fn.ExecuteQuery(updateStableCommand);
+
+                // Redirect to the VetAdd page after deletion
+                Response.Redirect("VetAdd.aspx", false);
+                Context.ApplicationInstance.CompleteRequest();
+            }
+            catch (Exception ex)
+            {
+                lblMessage.Text = "Error updating vet: " + ex.Message;
+            }
+        }
     }
 }

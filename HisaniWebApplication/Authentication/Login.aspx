@@ -97,19 +97,41 @@
 
             <!-- Login Form -->
             <asp:Label runat="server" ID="lblMessage" ForeColor="Red"></asp:Label>
-            <label for="txtUsername">Email</label>
-            <asp:TextBox runat="server" ID="txtUsername" CssClass="form-control" placeholder="Enter your email"></asp:TextBox>
+            <form id="loginForm" onsubmit="return validateForm()">
+                <label for="txtUsername">Email</label>
+                <asp:TextBox runat="server" ID="txtUsername" CssClass="form-control" placeholder="Enter your email" required></asp:TextBox>
 
-            <label for="txtPassword">Password</label>
-            <asp:TextBox runat="server" ID="txtPassword" CssClass="form-control" TextMode="Password" placeholder="Enter your password"></asp:TextBox>
+                <label for="txtPassword">Password</label>
+                <asp:TextBox runat="server" ID="txtPassword" CssClass="form-control" TextMode="Password" placeholder="Enter your password" required></asp:TextBox>
 
-            <div class="options">
-                Don't have an account?
-                <a href="CreateAccount.aspx">Create Account</a>
-            </div>
+                <div class="options">
+                    Don't have an account?
+                    <a href="CreateAccount.aspx">Create Account</a>
+                </div>
 
-            <asp:Button runat="server" ID="btnLogin" Text="Login" CssClass="btn" OnClick="btnLogin_Click"/>
+                <asp:Button runat="server" ID="btnLogin" Text="Login" CssClass="btn" OnClick="btnLogin_Click" />
+            </form>
         </div>
     </div>
-</asp:Content>
 
+    <script>
+        function validateForm() {
+            const email = document.getElementById('<%= txtUsername.ClientID %>').value.trim();
+            const password = document.getElementById('<%= txtPassword.ClientID %>').value.trim();
+
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!email || !password) {
+                alert("Please fill in both email and password.");
+                return false;
+            }
+
+            if (!emailPattern.test(email)) {
+                alert("Please enter a valid email address.");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+</asp:Content>

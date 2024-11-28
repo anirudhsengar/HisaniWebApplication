@@ -61,35 +61,56 @@ namespace HisaniWebApplication.Trainer
         // Method to update stable details
         protected void btnEditStable_Click(object sender, EventArgs e)
         {
-            lblMessage.Text = ""; // Clear previous messages
-
             try
             {
-                string trainerEmail = Session["TrainerEmail"] as string;
-                if (string.IsNullOrEmpty(trainerEmail))
+                string stableName = StableName.Text.Trim();
+                string location = Location.Text.Trim();
+                int capacity;
+
+                // Server-side validation
+                if (string.IsNullOrEmpty(stableName) || stableName.Length < 3)
                 {
-                    lblMessage.Text = "Trainer email not found in session.";
+                    Response.Write("<script>alert('Stable name must be at least 3 characters long.');</script>");
                     return;
                 }
 
-                // Proceed with update if VetEmail exists
-                string updateQuery = "UPDATE Stable SET StableName = @StableName, Location = @Location, Capacity = @Capacity WHERE TrainerEmail = @TrainerEmail";
-                SqlCommand cmd = new SqlCommand(updateQuery);
-                cmd.Parameters.AddWithValue("@StableName", StableName.Text);
-                cmd.Parameters.AddWithValue("@Location", Location.Text);
-                cmd.Parameters.AddWithValue("@Capacity", int.Parse(Capacity.Text));
+                if (string.IsNullOrEmpty(location))
+                {
+                    Response.Write("<script>alert('Location is required.');</script>");
+                    return;
+                }
+
+                if (!int.TryParse(Capacity.Text.Trim(), out capacity) || capacity <= 0)
+                {
+                    Response.Write("<script>alert('Capacity must be a positive number.');</script>");
+                    return;
+                }
+
+                string trainerEmail = Session["TrainerEmail"] as string;
+                if (string.IsNullOrEmpty(trainerEmail))
+                {
+                    return;
+                }
+
+                // Proceed with updating the stable
+                string query = "UPDATE Stable SET StableName = @StableName, Location = @Location, Capacity = @Capacity WHERE TrainerEmail = @TrainerEmail";
+                SqlCommand cmd = new SqlCommand(query);
+                cmd.Parameters.AddWithValue("@StableName", stableName);
+                cmd.Parameters.AddWithValue("@Location", location);
+                cmd.Parameters.AddWithValue("@Capacity", capacity);
                 cmd.Parameters.AddWithValue("@TrainerEmail", trainerEmail);
 
                 fn.ExecuteQuery(cmd);
 
+                // Redirect to Stable Details page
                 Response.Redirect("StableDetails.aspx", false);
                 Context.ApplicationInstance.CompleteRequest();
             }
             catch (Exception ex)
             {
-                lblMessage.Text = "Error updating stable: " + ex.Message;
             }
         }
+
 
     }
 }

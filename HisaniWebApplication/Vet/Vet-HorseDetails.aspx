@@ -1,92 +1,116 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Vet/Vet.Master" AutoEventWireup="true" CodeBehind="Vet-HorseDetails.aspx.cs" Inherits="HisaniWebApplication.Vet.Vet_HorseDetails" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-</asp:Content>
-<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <style>
+        /* General Styling */
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
         .horse-details-container {
-            max-width: 700px;
-            margin: 40px auto;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
-            background-color: #f9f9f9;
-            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 15px;
+            background: #fff;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.5s ease-in-out;
         }
+
         .horse-details-container h2 {
-            color: #444;
-            font-size: 26px;
-            text-align: center;
-            margin-bottom: 25px;
-            position: relative;
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #c6bf38;
+            padding-bottom: 10px;
+            display: inline-block;
         }
-        .details-group {
+
+        .button-container {
+            text-align: right;
             margin-bottom: 20px;
         }
-        .details-group label {
-            display: block;
-            font-size: 18px;
-            color: #666;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-        .details-group p {
+
+        .btn {
+            padding: 10px 20px;
             font-size: 16px;
-            color: #333;
-            padding: 10px;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-        }
-        .btn-container {
-            display: flex;
-            justify-content: flex-end;
-            gap: 15px;
-        }
-        .btn-edit, .btn-delete {
-            padding: 12px 25px;
-            font-size: 16px;
-            border-radius: 6px;
             border: none;
+            border-radius: 25px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            margin-left: 10px;
+            transition: all 0.3s ease;
+            font-weight: bold;
         }
-        .btn-delete {
-            background-color: #e74c3c;
-            color: white;
+
+        .edit-btn {
+            background: grey;
+            color: #fff;
         }
-        .btn-delete:hover {
-            background-color: #c0392b;
+
+        .edit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px grey;
         }
-        .confirmation-message {
-            color: #e74c3c;
-            font-size: 14px;
-            text-align: center;
+
+        .delete-btn {
+            background: linear-gradient(90deg, #f85032, #e73827);
+            color: #fff;
+        }
+
+        .delete-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(232, 56, 39, 0.5);
+        }
+
+        .horse-info {
             margin-top: 20px;
+            line-height: 1.8;
+        }
+
+        .horse-info p {
+            font-size: 18px;
+            color: #555;
+            background: rgba(198, 191, 56, 0.1);
+            border-radius: 10px;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+        }
+
+        .horse-info strong {
+            color: #333;
+        }
+
+        .horse-info p:hover {
+            background: rgba(198, 191, 56, 0.2);
+            transition: background 0.3s ease;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
-
-    <div class="horse-details-container">
-        <h2>Horse Details</h2>
-        <div class="details-group">
-            <label>Horse Name:</label>
-            <p><asp:Label ID="lblHorseName" runat="server" Text=""></asp:Label></p>
-        </div>
-        <div class="details-group">
-            <label>Horse Breed:</label>
-            <p><asp:Label ID="lblHorseBreed" runat="server" Text=""></asp:Label></p>
-        </div>
-        <div class="details-group">
-            <label>Sex:</label>
-            <p><asp:Label ID="lblHorseSex" runat="server" Text=""></asp:Label></p>
-        </div>
-        <div class="details-group">
-            <label>Date of Birth:</label>
-            <p><asp:Label ID="lblHorseDOB" runat="server" Text=""></asp:Label></p>
-        </div>
-
-    </div>
-
-    
-
 </asp:Content>
 
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <div class="horse-details-container">
+        <h2>Horse Details</h2>
+
+        <div class="horse-info">
+            <p><strong>Horse Name:</strong> <asp:Label ID="lblHorseName" runat="server"></asp:Label></p>
+            <p><strong>Horse Breed:</strong> <asp:Label ID="lblHorseBreed" runat="server"></asp:Label></p>
+            <p><strong>Sex:</strong> <asp:Label ID="lblHorseSex" runat="server"></asp:Label></p>
+            <p><strong>Date of Birth:</strong> <asp:Label ID="lblHorseDOB" runat="server"></asp:Label></p>
+        </div>
+
+        <asp:Label ID="lblMessage" runat="server" ForeColor="Red"></asp:Label>
+    </div>
+</asp:Content>

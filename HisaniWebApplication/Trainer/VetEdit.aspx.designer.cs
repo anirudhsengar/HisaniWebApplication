@@ -15,30 +15,48 @@ namespace HisaniWebApplication.Trainer
     {
 
         /// <summary>
-        /// VetName control.
+        /// vetEmailText control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox VetName;
+        protected global::System.Web.UI.WebControls.TextBox vetEmailText;
 
         /// <summary>
-        /// VetSpeciality control.
+        /// vetName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox VetSpeciality;
+        protected global::System.Web.UI.WebControls.TextBox vetName;
 
         /// <summary>
-        /// VetContact control.
+        /// vetSpeciality control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox VetContact;
+        protected global::System.Web.UI.WebControls.TextBox vetSpeciality;
+
+        /// <summary>
+        /// vetContact control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox vetContact;
+
+        /// <summary>
+        /// btnEditVet control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnEditVet;
     }
 }

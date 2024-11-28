@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
 using HisaniWebApplication.Models;
@@ -33,8 +28,8 @@ namespace HisaniWebApplication.Trainer
                     Context.ApplicationInstance.CompleteRequest();
                 }
 
-                    // Query to fetch horses associated with the trainer's stable
-                    string query = "SELECT HorseID, HorseName FROM Horse WHERE StableID = (SELECT StableID FROM Stable WHERE TrainerEmail = @TrainerEmail)";
+                // Query to fetch horses associated with the trainer's stable
+                string query = "SELECT HorseID, HorseName FROM Horse WHERE StableID = (SELECT StableID FROM Stable WHERE TrainerEmail = @TrainerEmail)";
                 SqlCommand cmd = new SqlCommand(query);
                 cmd.Parameters.AddWithValue("@TrainerEmail", trainerEmail);
 
@@ -46,12 +41,15 @@ namespace HisaniWebApplication.Trainer
                 }
                 else
                 {
-                    // Optionally handle the case where there are no horses to display
+                    // If no horses are found, show a message
+                    RepeaterHorseList.Visible = false;
+                    // Optionally add a label to display a message like "No horses found."
                 }
             }
             catch (Exception ex)
             {
                 // Handle exceptions (log, display error message, etc.)
+                Response.Write("Error: " + ex.Message);
             }
         }
     }

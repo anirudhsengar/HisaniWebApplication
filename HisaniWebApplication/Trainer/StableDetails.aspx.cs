@@ -76,24 +76,55 @@ namespace HisaniWebApplication.Trainer
         {
             try
             {
-                string trainerEmail = "testtrainer@example.com"; // Replace with Session["TrainerEmail"]
+                string trainerEmail = Session["TrainerEmail"] as string;
 
-                // Delete stable query
-                string deleteQuery = "DELETE FROM Stable WHERE TrainerEmail = @TrainerEmail";
-                SqlCommand cmd = new SqlCommand(deleteQuery);
+                // Step 1: Retrieve Stable IDs for the trainer
+                string query = "SELECT StableID FROM Stable WHERE TrainerEmail = @TrainerEmail";
+                SqlCommand cmd = new SqlCommand(query);
                 cmd.Parameters.AddWithValue("@TrainerEmail", trainerEmail);
+                DataTable stableDetails = fn.Fetch(cmd);
 
-                fn.ExecuteQuery(cmd); // Execute the delete query
+                if (stableDetails.Rows.Count > 0)
+                {
+                    foreach (DataRow row in stableDetails.Rows)
+                    {
+                        string stableID = row["StableID"].ToString();
 
-                // Redirect to StableAdd.aspx after successful deletion
-                Response.Redirect("StableAdd.aspx", false);
-                Context.ApplicationInstance.CompleteRequest(); // Ends the current request
+                        // Step 2: Delete records associated with the stable
+                        string deleteRecordsQuery = "DELETE FROM Records WHERE StableID = @StableID";
+                        SqlCommand cmd1 = new SqlCommand(deleteRecordsQuery);
+                        cmd1.Parameters.AddWithValue("@StableID", stableID);
+                        fn.ExecuteQuery(cmd1);
+
+                        // Step 3: Delete horses associated with the stable
+                        string deleteHorsesQuery = "DELETE FROM Horse WHERE StableID = @StableID";
+                        SqlCommand cmd2 = new SqlCommand(deleteHorsesQuery);
+                        cmd2.Parameters.AddWithValue("@StableID", stableID);
+                        fn.ExecuteQuery(cmd2);
+                    }
+
+                    // Step 4: Delete the stable itself
+                    string deleteStableQuery = "DELETE FROM Stable WHERE TrainerEmail = @TrainerEmail";
+                    SqlCommand cmd3 = new SqlCommand(deleteStableQuery);
+                    cmd3.Parameters.AddWithValue("@TrainerEmail", trainerEmail);
+                    fn.ExecuteQuery(cmd3);
+
+                    // Redirect to StableAdd.aspx after successful deletion
+                    Response.Redirect("StableAdd.aspx", false);
+                    Context.ApplicationInstance.CompleteRequest();
+                }
+                else
+                {
+                    lblMessage.Text = "No stables found for the trainer.";
+                }
             }
             catch (Exception ex)
             {
-                lblMessage.Text = "Error deleting stable: " + ex.Message;
+                lblMessage.Text = ex.Message;
             }
         }
+
+
         protected void btnEditStable_Click(object sender, EventArgs e)
         {
             try
@@ -104,7 +135,7 @@ namespace HisaniWebApplication.Trainer
             }
             catch (Exception ex)
             {
-                lblMessage.Text = "Error updating stable: " + ex.Message;
+                lblMessage.Text = ex.ToString();
             }
         }
 

@@ -17,7 +17,32 @@ namespace HisaniWebApplication.Vet
                 Response.Redirect("~/Authentication/Login.aspx", false);
                 Context.ApplicationInstance.CompleteRequest();
             }
+            HighlightCurrentPage();
+            StyleLogoutLink();
+        }
 
+        private void HighlightCurrentPage()
+        {
+            string currentPage = Request.Url.AbsolutePath.ToLower();
+
+            // Highlight the active link based on the current URL
+            if (currentPage.Contains("/vet/vetdashboard.aspx"))
+            {
+                dashboardLink.Attributes.Add("class", "active");
+            }
+            else if (currentPage.Contains("/vet/vet-horselist.aspx"))
+            {
+                horseLink.Attributes.Add("class", "active");
+            }
+            else if (currentPage.Contains("/vet/vet-recorddisplay.aspx"))
+            {
+                recordsLink.Attributes.Add("class", "active");
+            }
+        }
+
+        private void StyleLogoutLink()
+        {
+            btnLogout.CssClass = "logout-link";
         }
 
         protected void Logout_Click(object sender, EventArgs e)

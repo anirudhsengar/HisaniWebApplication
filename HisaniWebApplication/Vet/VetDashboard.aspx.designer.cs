@@ -13,32 +13,5 @@ namespace HisaniWebApplication.Vet
 
     public partial class VetDashboard
     {
-
-        /// <summary>
-        /// lblAssignedHorses control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblAssignedHorses;
-
-        /// <summary>
-        /// lblTotalRecords control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTotalRecords;
-
-        /// <summary>
-        /// lblTodaysRecords control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTodaysRecords;
     }
 }

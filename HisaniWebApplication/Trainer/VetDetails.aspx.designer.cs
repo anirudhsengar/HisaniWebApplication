@@ -15,30 +15,57 @@ namespace HisaniWebApplication.Trainer
     {
 
         /// <summary>
-        /// VetName control.
+        /// btnEditVet control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label VetName;
+        protected global::System.Web.UI.WebControls.Button btnEditVet;
 
         /// <summary>
-        /// VetSpeciality control.
+        /// btnDeleteVet control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label VetSpeciality;
+        protected global::System.Web.UI.WebControls.Button btnDeleteVet;
 
         /// <summary>
-        /// VetContact control.
+        /// lblVetName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label VetContact;
+        protected global::System.Web.UI.WebControls.Label lblVetName;
+
+        /// <summary>
+        /// lblVetSpeciality control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblVetSpeciality;
+
+        /// <summary>
+        /// lblVetContact control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblVetContact;
+
+        /// <summary>
+        /// lblMessage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblMessage;
     }
 }

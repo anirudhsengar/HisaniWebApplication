@@ -7,100 +7,98 @@ using System.Web.UI.WebControls;
 using System.Data;
 using static HisaniWebApplication.Models.CommonFunctions;
 using System.Data.SqlClient;
+using Newtonsoft.Json;
 
 namespace HisaniWebApplication.Vet
 {
-    public partial class VetDashboard : System.Web.UI.Page
+    public partial class VetDashboard : Page
     {
-        Commonfn Commonfn = new Commonfn(); // Common functions class instance
+        Commonfn fn = new Commonfn();
+
+        public string HorseNamesJson { get; set; }
+        public string HorseDobJson { get; set; }
+        public string HorseGenderLabelsJson { get; set; }
+        public string HorseGenderDataJson { get; set; }
+        public string DailyRecords { get; set; }
+        public string CurrentHorsesCount { get; set; }
+        public string TotalUsers { get; set; }
+        public string UserDistributionJson { get; set; }
+        public string TotalLogins { get; set; }
+        public string UploadsJson { get; set; }
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
-                string vetEmail = Session["VetEmail"].ToString();
-                if (string.IsNullOrEmpty(vetEmail))
-                {
-                    Response.Redirect("~/Authentication/Login.aspx", false);
-                    Context.ApplicationInstance.CompleteRequest();
-                }
-                LoadDashboardData(vetEmail);
+                LoadChartData();
             }
         }
 
-        private void LoadDashboardData(string vetEmail)
+        private void LoadChartData()
         {
-            try
-            {
-                // Query for Assigned Horses
-                string assignedHorsesQuery = @"
-                    SELECT COUNT(*) 
-                    FROM Horse 
-                    INNER JOIN Stable ON Horse.StableID = Stable.StableID
-                    WHERE Stable.VetEmail = @VetEmail";
-                using (SqlCommand cmd = new SqlCommand(assignedHorsesQuery))
-                {
-                    cmd.Parameters.AddWithValue("@VetEmail", vetEmail);
-                    int assignedHorsesCount = Convert.ToInt32(Commonfn.FetchScalar(cmd));
-                    lblAssignedHorses.Text = assignedHorsesCount.ToString();
-                }
+            string vetEmail = Session["VetEmail"] as string;
 
-                // First, retrieve the StableID associated with the VetEmail
-                string stableIdQuery = @"
-    SELECT StableID
-    FROM Stable
-    WHERE VetEmail = @VetEmail";
+            string query = "SELECT StableID FROM Stable WHERE VetEmail = @VetEmail";
+            SqlCommand cmd = new SqlCommand(query);
+            cmd.Parameters.AddWithValue("@VetEmail", vetEmail);
 
-                string stableId = null;
-                using (SqlCommand cmd = new SqlCommand(stableIdQuery))
-                {
-                    cmd.Parameters.AddWithValue("@VetEmail", vetEmail);
-                    stableId = Commonfn.FetchScalar(cmd).ToString();
-                }
+            DataTable stableTable = fn.Fetch(cmd); // Correct: Pass the `SqlCommand` object
 
-                // If no StableID was found, exit or handle appropriately
-                if (string.IsNullOrEmpty(stableId))
-                {
-                    // Handle the case where the VetEmail doesn't have an associated StableID
-                    lblTotalRecords.Text = "No records found.";
-                    lblTodaysRecords.Text = "No records found.";
-                    return;
-                }
+            int stableID = Convert.ToInt32(stableTable.Rows[0]["StableID"]);
 
-                // Query for Total Records for the specific StableID
-                string totalRecordsQuery = @"
-    SELECT COUNT(*) 
-    FROM Records
-    WHERE StableID = @StableID";
+            // Horse Names
+            var horseNamesQuery = "SELECT HorseName FROM Horse WHERE StableID = " + stableID;
+            HorseNamesJson = JsonConvert.SerializeObject(
+                fn.Fetch(new SqlCommand(horseNamesQuery))
+                  .AsEnumerable()
+                  .Select(r => r["HorseName"].ToString()));
 
-                using (SqlCommand cmd = new SqlCommand(totalRecordsQuery))
-                {
-                    cmd.Parameters.AddWithValue("@StableID", stableId);
-                    int totalRecordsCount = Convert.ToInt32(Commonfn.FetchScalar(cmd));
-                    lblTotalRecords.Text = totalRecordsCount.ToString();
-                }
+            // Horse DOB
+            var dobQuery = "SELECT DateOfBirth FROM Horse WHERE StableID = " + stableID;
+            HorseDobJson = JsonConvert.SerializeObject(
+                fn.Fetch(new SqlCommand(dobQuery))
+                  .AsEnumerable()
+                  .Select(r => new { x = Convert.ToDateTime(r["DateOfBirth"]), y = 1 }));
 
-                // Query for Today's Records for the specific StableID
-                string todaysRecordsQuery = @"
-    SELECT COUNT(*) 
-    FROM Records
-    WHERE StableID = @StableID 
-    AND CAST(RecordDate AS DATE) = CAST(GETDATE() AS DATE)";
+            // Horse Gender
+            var genderQuery = "SELECT Sex, COUNT(*) AS Count FROM Horse WHERE StableID = " + stableID + " GROUP BY Sex";
+            var dtGender = fn.Fetch(new SqlCommand(genderQuery));
+            HorseGenderLabelsJson = JsonConvert.SerializeObject(dtGender.AsEnumerable().Select(r => r["Sex"].ToString()));
+            HorseGenderDataJson = JsonConvert.SerializeObject(dtGender.AsEnumerable().Select(r => Convert.ToInt32(r["Count"])));
 
-                using (SqlCommand cmd = new SqlCommand(todaysRecordsQuery))
-                {
-                    cmd.Parameters.AddWithValue("@StableID", stableId);
-                    int todaysRecordsCount = Convert.ToInt32(Commonfn.FetchScalar(cmd));
-                    lblTodaysRecords.Text = todaysRecordsCount.ToString();
-                }
+            // Daily Records
+            var dailyRecordsQuery = "SELECT COUNT(*) FROM Records WHERE CAST(RecordDate AS DATE) = CAST(GETDATE() AS DATE) AND StableID = " + stableID;
+            DailyRecords = fn.FetchScalar(new SqlCommand(dailyRecordsQuery)).ToString();
 
+            // Current Horses
+            var horseCountQuery = "SELECT COUNT(*) FROM Horse WHERE StableID = " + stableID;
+            CurrentHorsesCount = fn.FetchScalar(new SqlCommand(horseCountQuery)).ToString();
 
-            }
-            catch (Exception ex)
-            {
-                // Log error and show message (optional)
-                Response.Write("<script>alert('An error occurred: " + ex.Message + "');</script>");
-            }
+            // Total Users
+            var userCountQuery = "SELECT COUNT(*) FROM Users";
+            TotalUsers = fn.FetchScalar(new SqlCommand(userCountQuery)).ToString();
+
+            // User Distribution
+            var userDistributionQuery = "SELECT TypeOfUser, COUNT(*) AS Count FROM Users GROUP BY TypeOfUser";
+            UserDistributionJson = JsonConvert.SerializeObject(
+                fn.Fetch(new SqlCommand(userDistributionQuery))
+                  .AsEnumerable()
+                  .Select(r => Convert.ToInt32(r["Count"])));
+
+            // Total Logins
+            var loginsQuery = "SELECT Logins FROM WebsiteStats";
+            TotalLogins = fn.FetchScalar(new SqlCommand(loginsQuery)).ToString();
+
+            // Records and Horses Count
+            var recordsCountQuery = "SELECT COUNT(*) AS RecordsCount FROM Records";
+            var horsesCountQuery = "SELECT COUNT(*) AS HorsesCount FROM Horse";
+
+            var recordsCount = Convert.ToInt32(fn.FetchScalar(new SqlCommand(recordsCountQuery)));
+            var horsesCount = Convert.ToInt32(fn.FetchScalar(new SqlCommand(horsesCountQuery)));
+
+            // Prepare data for chart
+            UploadsJson = JsonConvert.SerializeObject(new int[] { recordsCount, horsesCount });
+
         }
     }
 }

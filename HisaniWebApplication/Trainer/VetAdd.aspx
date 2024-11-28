@@ -1,80 +1,210 @@
 ﻿<%@ Page Title="Add Vet" Language="C#" MasterPageFile="~/Trainer/Trainer.Master" AutoEventWireup="true" CodeBehind="VetAdd.aspx.cs" Inherits="HisaniWebApplication.Trainer.VetAdd" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-</asp:Content>
-<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <style>
-        .vet-form-container {
-            max-width: 600px;
-            margin: 30px auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
+        /* General Styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
         }
-        .vet-form-container h2 {
-            font-size: 24px;
+
+        .add-vet-container {
+            max-width: 700px;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 15px;
+            background: #fff;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.15);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .add-vet-container h2 {
             color: #333;
+            font-size: 28px;
             text-align: center;
             margin-bottom: 20px;
+            position: relative;
         }
+
+        .add-vet-container h2::after {
+            content: '';
+            width: 200px;
+            height: 3px;
+            background: #C6BF38;
+            display: block;
+            margin: 10px auto 0;
+            border-radius: 2px;
+        }
+
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            padding-right: 20px;
         }
+
         .form-group label {
+            display: block;
             font-size: 16px;
             color: #555;
+            margin-bottom: 8px;
         }
-        .form-group input {
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="number"] {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
-        .form-group input:focus {
-            border-color: #C6BF38;
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="email"]:focus,
+        .form-group input[type="number"]:focus {
+            border-color: #00bcd4;
+            box-shadow: 0 0 8px rgba(0, 188, 212, 0.4);
         }
+
         .btn-container {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 30px;
         }
-        .btn-container button {
-            padding: 10px 20px;
+
+        .btn-submit {
+            padding: 12px 25px;
             font-size: 16px;
-            background-color: #C6BF38;
-            color: white;
+            border-radius: 25px;
+            background: #C6BF38;
+            color: #fff;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
+            box-shadow: 0px 5px 15px #C6BF38;
+            transition: all 0.3s ease;
         }
-        .btn-container button:hover {
-            background-color: #b3a332;
+
+        .btn-submit:hover {
+            background: #C6BF38;
+            box-shadow: 0px 10px 30px #C6BF38;
+            transform: translateY(-3px);
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
+</asp:Content>
 
-    <div class="vet-form-container">
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <div class="add-vet-container">
         <h2>Add New Vet</h2>
         <form method="post" action="VetAdd.aspx">
             <div class="form-group">
-                <label for="vetEmail">Vet Email</label>
-                <input type="email" id="vetEmail" name="vetEmail" required />
+                <label for="vetEmail">Vet Email:</label>
+                <asp:TextBox ID="vetEmail" runat="server" CssClass="form-control" placeholder="Enter vet email" type="email" />
             </div>
             <div class="form-group">
-                <label for="vetName">Vet Name</label>
-                <input type="text" id="vetName" name="vetName" required />
+                <label for="vetName">Vet Name:</label>
+                <asp:TextBox ID="vetName" runat="server" CssClass="form-control" placeholder="Enter vet name" />
             </div>
             <div class="form-group">
-                <label for="vetSpecialty">Specialty</label>
-                <input type="text" id="vetSpeciality" name="vetSpeciality" required />
+                <label for="vetSpeciality">Specialty:</label>
+                <asp:TextBox ID="vetSpeciality" runat="server" CssClass="form-control" placeholder="Enter vet specialty" />
             </div>
             <div class="form-group">
-                <label for="vetContact">Contact</label>
-                <input type="text" id="vetContact" name="vetContact" required />
+                <label for="vetContact">Contact:</label>
+                <asp:TextBox ID="vetContact" runat="server" CssClass="form-control" placeholder="Enter contact number" />
             </div>
 
             <div class="btn-container">
-                <button type="submit">Add Vet</button>
+                <asp:Button 
+                    ID="btnAddVet" 
+                    runat="server" 
+                    CssClass="btn-submit" 
+                    Text="Add Vet" 
+                    OnClick="btnAddVet_Click" 
+                    OnClientClick="return validateForm();" 
+                />
             </div>
         </form>
     </div>
+
+    <script>
+        function validateForm() {
+            let vetEmail = document.getElementById('<%= vetEmail.ClientID %>').value.trim();
+            let vetName = document.getElementById('<%= vetName.ClientID %>').value.trim();
+            let vetSpeciality = document.getElementById('<%= vetSpeciality.ClientID %>').value.trim();
+            let vetContact = document.getElementById('<%= vetContact.ClientID %>').value.trim();
+
+            let errorMessage = '';
+            let isValid = true;
+
+            if (vetEmail.length === 0) {
+                errorMessage = 'Vet email is required.';
+                displayError('<%= vetEmail.ClientID %>', errorMessage);
+                isValid = false;
+            } else {
+                clearError('<%= vetEmail.ClientID %>');
+            }
+
+            if (vetName.length < 3) {
+                errorMessage = 'Vet name must be at least 3 characters long.';
+                displayError('<%= vetName.ClientID %>', errorMessage);
+                isValid = false;
+            } else {
+                clearError('<%= vetName.ClientID %>');
+            }
+
+            if (vetSpeciality.length < 3) {
+                errorMessage = 'Specialty must be at least 3 characters long.';
+                displayError('<%= vetSpeciality.ClientID %>', errorMessage);
+                isValid = false;
+            } else {
+                clearError('<%= vetSpeciality.ClientID %>');
+            }
+
+            if (vetContact.length === 0 || isNaN(vetContact)) {
+                errorMessage = 'Valid contact is required.';
+                displayError('<%= vetContact.ClientID %>', errorMessage);
+                isValid = false;
+            } else {
+                        clearError('<%= vetContact.ClientID %>');
+            }
+
+            // Return false if validation fails, preventing form submission
+            return isValid;
+        }
+
+
+        function displayError(controlId, message) {
+            let control = document.getElementById(controlId);
+            let errorLabel = control.nextElementSibling;
+            if (!errorLabel || !errorLabel.classList.contains('error-message')) {
+                errorLabel = document.createElement('span');
+                errorLabel.className = 'error-message';
+                errorLabel.style.color = 'red';
+                errorLabel.style.fontSize = '14px';
+                control.parentNode.appendChild(errorLabel);
+            }
+            errorLabel.textContent = message;
+        }
+
+        function clearError(controlId) {
+            let control = document.getElementById(controlId);
+            let errorLabel = control.nextElementSibling;
+            if (errorLabel && errorLabel.classList.contains('error-message')) {
+                errorLabel.textContent = '';
+            }
+        }
+    </script>
 </asp:Content>

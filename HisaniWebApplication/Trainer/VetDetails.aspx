@@ -1,75 +1,129 @@
 ﻿<%@ Page Title="Vet Details" Language="C#" MasterPageFile="~/Trainer/Trainer.Master" AutoEventWireup="true" CodeBehind="VetDetails.aspx.cs" Inherits="HisaniWebApplication.Trainer.VetDetails" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-</asp:Content>
-<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <style>
-        .vet-details-container {
-            max-width: 600px;
-            margin: 30px auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
+        /* General Styling */
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
         }
+
+        .vet-details-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 15px;
+            background: #fff;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
         .vet-details-container h2 {
-            font-size: 24px;
+            font-size: 28px;
             color: #333;
-            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #c6bf38;
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+
+        .button-container {
+            text-align: right;
             margin-bottom: 20px;
         }
-        .vet-details {
-            margin-bottom: 15px;
-            font-size: 18px;
-            color: #555;
-        }
-        .vet-details strong {
+
+        .btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: all 0.3s ease;
             font-weight: bold;
         }
-        .btn-container {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-        .btn-container a {
-            padding: 10px 20px;
-            border-radius: 5px;
-            color: white;
-            text-decoration: none;
-        }
+
         .edit-btn {
-            background-color: lightgray;
+            background: grey;
+            color: #fff;
         }
+
+        .edit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px grey;
+        }
+
         .delete-btn {
-            background-color: red;
+            background: linear-gradient(90deg, #f85032, #e73827);
+            color: #fff;
         }
-        .btn-container a:hover {
-            opacity: 0.8;
+
+        .delete-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(232, 56, 39, 0.5);
         }
-    </style>
 
-    <div class="vet-details-container">
-        <h2>Vet Details</h2>
-        <div class="vet-details">
-            <strong>Vet Name:</strong> <asp:Label ID="VetName" runat="server" Text="N/A" />
-        </div>
-        <div class="vet-details">
-            <strong>Speciality:</strong> <asp:Label ID="VetSpeciality" runat="server" Text="N/A" />
-        </div>
-        <div class="vet-details">
-            <strong>Contact:</strong> <asp:Label ID="VetContact" runat="server" Text="N/A" />
-        </div>
+        .vet-info {
+            margin-top: 20px;
+            line-height: 1.8;
+        }
 
-        <div class="btn-container">
-            <a href="VetEdit.aspx" class="edit-btn">Edit</a>
-            <a href="javascript:void(0);" class="delete-btn" onclick="deleteVet()">Delete</a>
-        </div>
-    </div>
+        .vet-info p {
+            font-size: 18px;
+            color: #555;
+            background: rgba(198, 191, 56, 0.1);
+            border-radius: 10px;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+        }
 
-    <script>
-        function deleteVet() {
-            if (confirm('Are you sure you want to delete this vet?')) {
-                window.location.href = "VetDetails.aspx?delete=true";
+        .vet-info strong {
+            color: #333;
+        }
+
+        .vet-info p:hover {
+            background: rgba(198, 191, 56, 0.2);
+            transition: background 0.3s ease;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
-    </script>
+    </style>
+</asp:Content>
+
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <div class="vet-details-container">
+        <h2>Vet Details</h2>
+
+        <!-- Buttons: Edit and Delete -->
+        <div class="button-container">
+            <!-- Edit Button -->
+            <asp:Button ID="btnEditVet" runat="server" CssClass="btn edit-btn" 
+                        Text="Edit Vet" OnClick="btnEditVet_Click" />
+
+            <!-- Delete Button -->
+            <asp:Button ID="btnDeleteVet" runat="server" CssClass="btn delete-btn" 
+                        Text="Delete Vet" OnClick="btnDeleteVet_Click" 
+                        OnClientClick="return confirm('Are you sure you want to delete this vet?');" />
+        </div>
+
+        <!-- Vet Information -->
+        <div class="vet-info">
+            <p><strong>Vet Name:</strong> <asp:Label ID="lblVetName" runat="server"></asp:Label></p>
+            <p><strong>Speciality:</strong> <asp:Label ID="lblVetSpeciality" runat="server"></asp:Label></p>
+            <p><strong>Contact:</strong> <asp:Label ID="lblVetContact" runat="server"></asp:Label></p>
+        </div>
+
+        <asp:Label ID="lblMessage" runat="server" ForeColor="Red"></asp:Label>
+    </div>
 </asp:Content>
